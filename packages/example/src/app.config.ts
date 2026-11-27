@@ -260,6 +260,10 @@ export const server = config({
     my_room: defineRoom(MyRoom).
       filterBy(["progress"]).
       sortBy({ clients: -1 }),
+    // The checked-in browser client uses this alias.
+    my_room_2: defineRoom(MyRoom).
+      filterBy(["progress"]).
+      sortBy({ clients: -1 }),
   },
 
   routes: createRouter({

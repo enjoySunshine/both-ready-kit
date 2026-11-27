@@ -13,6 +13,8 @@ export const server = defineServer({
 
   rooms: {
     my_room: defineRoom(MyRoom),
+    // Backwards-compatible name used by the checked-in browser client.
+    my_room_2: defineRoom(MyRoom),
   },
 
   express: (app) => {

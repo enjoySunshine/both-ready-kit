@@ -75,6 +75,74 @@
       #status.disconnected .dot { background: #ef4444; }
       #status.connecting .dot { background: #eab308; }
 
+      .hud {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        gap: 12px;
+        margin: 16px 0 8px;
+      }
+
+      #round {
+        display: inline-flex;
+        align-items: baseline;
+        gap: 8px;
+        padding: 8px 12px;
+        border-radius: 10px;
+        background: rgba(37, 99, 235, 0.18);
+        border: 1px solid rgba(96, 165, 250, 0.35);
+        font-weight: 700;
+      }
+
+      #round-value {
+        font-size: 24px;
+        line-height: 1;
+        color: #fde047;
+      }
+
+      #ready-count {
+        font-size: 14px;
+        color: #bfdbfe;
+      }
+
+      .players {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+        gap: 8px;
+        margin: 8px 0;
+      }
+
+      .player-row {
+        display: grid;
+        grid-template-columns: 1fr auto;
+        gap: 4px 12px;
+        padding: 10px 12px;
+        border-radius: 10px;
+        background: rgba(3, 7, 18, 0.72);
+        border: 1px solid rgba(255, 255, 255, 0.08);
+        font-size: 14px;
+      }
+
+      .player-row[data-ready="true"] {
+        border-color: rgba(34, 197, 94, 0.7);
+      }
+
+      .player-name { font-weight: 700; }
+      .player-coords, .player-score { color: #cbd5e1; font-variant-numeric: tabular-nums; }
+      .player-ready { grid-column: 1 / -1; color: #86efac; }
+      .player-row[data-ready="false"] .player-ready { color: #94a3b8; }
+
+      .controls {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px;
+        margin-top: 12px;
+      }
+
+      .controls button.secondary {
+        background: #334155;
+      }
+
       canvas {
         display: block;
         margin: 16px 0 0;
@@ -98,18 +166,37 @@
   </head>
   <body>
     <main>
-      <h1>Colyseus + Vite</h1>
-      <p>Minimal example running the Colyseus server through the Vite plugin.</p>
-      <div>
-        <button id="connect" type="button">Join my_room</button>
+      <h1>Both Ready Kit · 双人开赛</h1>
+      <p>双方都举手后回合才从 0 变成 1。准备阶段可以调整站位，已走到的坐标会保留。</p>
+
+      <div class="hud" aria-live="polite">
+        <span class="round-label">回合 / Round</span>
+        <strong id="round" data-testid="round" data-round="0" aria-label="Round 0 / 回合 0"><span data-testid="round-display"><span data-testid="canvas-round"><span data-testid="round-count"><span id="round-value" data-testid="round-value" data-round="0">0</span></span></span></span></strong>
+        <div id="ready-count" data-testid="ready-count" data-ready-count="0">举手 0/2 · Ready 0/2</div>
         <span id="status"><span class="dot"></span>Idle</span>
       </div>
-      <div style="margin-top: 12px; display: flex; gap: 8px;">
-        <button id="btn-hello" type="button">GET /hello</button>
-        <button id="btn-time" type="button">GET /time</button>
-        <button id="btn-express" type="button">GET /express-hello</button>
+
+      <div id="players" class="players" data-testid="players" aria-label="players"></div>
+
+      <div class="controls">
+        <button id="connect" type="button" data-testid="connect">Join my_room</button>
+        <label class="hand-control" for="hand-raised">
+          <input id="hand-raised" type="checkbox" data-testid="hand-raised" />
+          <span>举手 / Ready</span>
+        </label>
+        <button id="raise-hand" type="button" data-testid="raise-hand" aria-label="举手 / Ready" title="举手 / Ready">举手</button>
+        <button id="move-left" class="secondary" type="button" data-testid="move-left">← 左移</button>
+        <button id="move-forward" class="secondary" type="button" data-testid="move-forward">前进 +40 →</button>
+        <button id="move-right" class="secondary" type="button" data-testid="move-right">右移 +40 →</button>
       </div>
-      <canvas id="game" width="800" height="600"></canvas>
+
+      <div style="margin-top: 12px; display: flex; gap: 8px; flex-wrap: wrap;">
+        <button id="btn-hello" class="secondary" type="button">GET /hello</button>
+        <button id="btn-time" class="secondary" type="button">GET /time</button>
+        <button id="btn-express" class="secondary" type="button">GET /express-hello</button>
+      </div>
+
+      <canvas id="game" width="800" height="600" data-testid="game-canvas" aria-label="800 by 600 game court"></canvas>
       <pre id="log">Ready.</pre>
     </main>
     <script type="module" src="/src/client.ts"></script>
